@@ -22,7 +22,6 @@ class UsersManager {
   // and returns a user object
   Future<User> login(String username, String password) async {
     // get the username and pass hash object from the database
-    final user = await User.getUser(username);
     final passHash = await PasswordHashing.hashPassword(password);
     // check if the password hash matches the one in the database
     await pg.runTx(
