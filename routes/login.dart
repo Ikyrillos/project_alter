@@ -1,7 +1,7 @@
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import '../config/db.config.dart';
 import '../config/jwt.dart';
-import '../constants/pg.dart';
 import '../models/httpCodes.dart';
 import '../models/users.dart';
 
@@ -28,16 +28,7 @@ Future<Response?> onRequest(RequestContext context) async {
     await usersManager.login(username, password).then(
       (value) {
         final secretKey = SecretKey(jwtSecret);
-        jwt.sign(secretKey, expiresIn: const Duration(days: 1));
-        // ignore: cascade_invocations
-        // jwt.sign(
-        //   SecretKey(
-        //     jwtSecret!,
-        //   ),
-        //   expiresIn: const Duration(
-        //     days: 1,
-        //   ),
-        // );
+        final token = jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
         response = Response.json(
           body: {
             'message': StatusCodes.getMessage(StatusCodes.OK),

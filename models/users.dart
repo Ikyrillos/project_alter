@@ -72,4 +72,15 @@ class User {
     // return the user object
     return user.first[0] as String;
   }
+
+  String toJson() {
+    return '{"username": "$username", "password": "$password"}';
+  }
+
+  Map<String, String> toMap() {
+    return {
+      'username': username,
+      'password': password,
+    };
+  }
 }

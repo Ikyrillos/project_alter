@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 
+import '../config/db.config.dart';
 import '../config/jwt.dart';
-import '../constants/pg.dart';
 import '../models/httpCodes.dart';
 import '../models/users.dart';
 
@@ -28,7 +28,8 @@ Future<Response?> onRequest(RequestContext context) async {
 
   try {
     await usersManager.createUser(username, password).then((value) {
-      jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
+      final token =
+          jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
       log('value: $jwtSecret');
       response = Response.json(
         body: {

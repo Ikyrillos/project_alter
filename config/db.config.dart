@@ -1,15 +1,20 @@
+import 'package:dotenv/dotenv.dart';
 import 'package:postgres_pool/postgres_pool.dart';
 
-import '../constants/pg.dart';
+DotEnv env = DotEnv(includePlatformEnvironment: true)..load();
 
 final pg = PgPool(
   PgEndpoint(
-    host: 'localhost',
+    host: env['postgresHost']!,
     database: 'postgres',
-    username: postgresUser,
-    password: postgresPassword,
+    username: env['postgresUser'],
+    password: env['postgresPassword'],
+    port: int.parse(env['postgresPort']!),
   ),
   settings: PgPoolSettings()
     ..maxConnectionAge = const Duration(hours: 1)
     ..concurrency = 4,
 );
+
+// jwt secret
+final jwtSecret = env['jwtSecret'].toString();
