@@ -27,8 +27,8 @@ Future<Response?> onRequest(RequestContext context) async {
   try {
     await usersManager.login(username, password).then(
       (value) {
-        final secretKey = SecretKey(jwtSecret);
-        final token = jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
+        final token =
+            jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
         response = Response.json(
           body: {
             'message': StatusCodes.getMessage(StatusCodes.OK),
