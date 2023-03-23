@@ -36,7 +36,7 @@ Future<Response?> onRequest(RequestContext context) async {
   }
 
   try {
-    await usersManager.createUser(username, password!, email!).then((value) {
+    await usersManager.createUser(username, password!, email).then((value) {
       final token = JWTManager.getJWT(username, email);
       log('value: $jwtSecret');
       response = Response.json(
