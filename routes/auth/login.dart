@@ -1,8 +1,6 @@
 // ignore_for_file: parameter_assignments
 
 import 'package:dart_frog/dart_frog.dart';
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import 'package:project_alter/config/db.config.dart';
 import 'package:project_alter/config/jwt.dart';
 import 'package:project_alter/handlers/auth_input_handler.dart';
 import 'package:project_alter/models/httpCodes.dart';

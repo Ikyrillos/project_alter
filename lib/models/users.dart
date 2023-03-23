@@ -1,11 +1,11 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:dartz/dartz.dart';
-import 'package:postgres_pool/postgres_pool.dart';
 import 'package:project_alter/config/db.config.dart';
-import 'package:project_alter/handlers/sql_senitizer.dart';
+import 'package:project_alter/handlers/sql_sanitizer.dart';
 import 'package:project_alter/models/encryption.dart';
-import 'package:project_alter/models/httpCodes.dart';
 
 /// UsersManager class that handles all the user related methods
 class UsersManager {
@@ -61,10 +61,12 @@ class UsersManager {
   ) async {
     final isMalicious = sanitizeInput(username);
     if (isMalicious) {
-      return right(Response.json(
-        body: {'error': 'Invalid username or password'},
-        statusCode: 401,
-      ));
+      return right(
+        Response.json(
+          body: {'error': 'Invalid username or password'},
+          statusCode: 401,
+        ),
+      );
     }
     // get the username and pass hash object from the database
     final passHash = PasswordHashing.hashPassword(password);
@@ -170,12 +172,14 @@ class User {
   /// get user method that takes in a username and returns a user object
   static Future<String> getUser(String username) async {
     // get the user object from the database PgSQL
-    final user = await pg.runTx((c) => c.query(
-          'SELECT * FROM users WHERE username = @username',
-          substitutionValues: {
-            'username': username,
-          },
-        ));
+    final user = await pg.runTx(
+      (c) => c.query(
+        'SELECT * FROM users WHERE username = @username',
+        substitutionValues: {
+          'username': username,
+        },
+      ),
+    );
     // return the user object
     await pg.close();
     return user.first[0] as String;

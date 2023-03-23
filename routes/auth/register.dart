@@ -13,7 +13,9 @@ Future<Response?> onRequest(RequestContext context) async {
   // change method to POST
   if (request.method.value != 'POST') {
     return Response.json(
-        body: {'error': 'Method not allowed'}, statusCode: 405);
+      body: {'error': 'Method not allowed'},
+      statusCode: 405,
+    );
   }
 
   final formData = await request.formData();

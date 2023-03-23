@@ -2,6 +2,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:project_alter/controllers/auth_controller.dart';
 import 'package:project_alter/models/httpCodes.dart';
 
+/// This middleware is used to verify the token
 Middleware tokenVerification() {
   return (handler) {
     return (context) async {

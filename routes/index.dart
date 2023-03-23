@@ -6,7 +6,7 @@ Response onRequest(RequestContext context) {
   json['version'] = '0.0.1';
 
   return Response.json(
-      body: json,
-      statusCode: 200,
-      headers: {'Content-Type': 'application/json'});
+    body: json,
+    headers: {'Content-Type': 'application/json'},
+  );
 }
