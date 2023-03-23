@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:project_alter/config/db.config.dart';
 import 'package:project_alter/config/jwt.dart';
-import 'package:project_alter/handlers/auth_input_handler.dart';
+import 'package:project_alter/controllers/auth_input_handler.dart';
 import 'package:project_alter/models/httpCodes.dart';
 import 'package:project_alter/models/users.dart';
 

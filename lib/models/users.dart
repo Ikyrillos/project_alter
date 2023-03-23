@@ -4,7 +4,7 @@ import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:dartz/dartz.dart';
 import 'package:project_alter/config/db.config.dart';
-import 'package:project_alter/handlers/sql_sanitizer.dart';
+import 'package:project_alter/controllers/sql_sanitizer.dart';
 import 'package:project_alter/models/encryption.dart';
 
 /// UsersManager class that handles all the user related methods
