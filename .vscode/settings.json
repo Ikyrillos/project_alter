@@ -2,6 +2,7 @@
   "cSpell.words": [
     "DEALLOCATE",
     "dotenv",
+    "hmac",
     "jsonwebtoken",
     "SAVEPOINT",
     "UNLISTEN"

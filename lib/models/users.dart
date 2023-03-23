@@ -138,6 +138,23 @@ class UsersManager {
     }
     return true;
   }
+
+  /// check user if already exists by email
+  /// return true if user already exists
+  Future<bool> isEmailAlreadyExist(String email) async {
+    final isEmailExist = await pg.runTx(
+      (c) => c.query(
+        'SELECT * FROM users WHERE email = @email',
+        substitutionValues: {
+          'email': email,
+        },
+      ),
+    );
+    if (isEmailExist.isEmpty) {
+      return false;
+    }
+    return true;
+  }
 }
 
 /// User class that represents a user object

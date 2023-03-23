@@ -1,6 +1,6 @@
 import 'package:dotenv/dotenv.dart';
 import 'package:postgres_pool/postgres_pool.dart';
-
+/// This class is used to connect to the database
 DotEnv env = DotEnv(includePlatformEnvironment: true)..load();
 
 final pg = PgPool(

@@ -1,3 +1,6 @@
+// ignore_for_file: avoid_dynamic_calls
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:project_alter/config/db.config.dart';
 
@@ -24,5 +27,22 @@ class JWTManager {
       issuer: 'localhost/8080',
     );
     return jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
+  }
+
+  /// method to verify JWT signature
+  static bool verifyJwtSignature(String jwt, String secret) {
+    final parts = jwt.split('.');
+    if (parts.length != 3) {
+      return false;
+    }
+    final header = parts[0];
+    final payload = parts[1];
+    final signature = parts[2];
+    final unsignedToken = '$header.$payload';
+    final hmac = Hmac(sha256, utf8.encode(secret));
+    final digest = hmac.convert(utf8.encode(unsignedToken));
+    final calculatedSignature = base64Url.encode(digest.bytes);
+    final result = signature == calculatedSignature.replaceAll('=', '');
+    return result;
   }
 }

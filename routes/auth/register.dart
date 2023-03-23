@@ -27,9 +27,12 @@ Future<Response?> onRequest(RequestContext context) async {
     );
   }
 
-  if (await usersManager.isUserAlreadyExist(username!)) {
-    return Response.json(
-        body: {'error': 'User already exist'}, statusCode: 400);
+  if (await usersManager.isUserAlreadyExist(username!) ||
+      await usersManager.isEmailAlreadyExist(email!)) {
+    final message = await usersManager.isUserAlreadyExist(username)
+        ? 'Username already exist'
+        : 'Email already exist';
+    return Response.json(body: {'error': message}, statusCode: 400);
   }
 
   try {
