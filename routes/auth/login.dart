@@ -1,9 +1,12 @@
+// ignore_for_file: parameter_assignments
+
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
-import '../../config/db.config.dart';
-import '../../config/jwt.dart';
-import '../../models/httpCodes.dart';
-import '../../models/users.dart';
+import 'package:project_alter/config/db.config.dart';
+import 'package:project_alter/config/jwt.dart';
+import 'package:project_alter/handlers/auth_input_handler.dart';
+import 'package:project_alter/models/httpCodes.dart';
+import 'package:project_alter/models/users.dart';
 
 Future<Response?> onRequest(RequestContext context) async {
   final usersManager = UsersManager();
@@ -12,27 +15,56 @@ Future<Response?> onRequest(RequestContext context) async {
   // change method to POST
   if (request.method.value != 'POST') {
     return Response.json(
-        body: {'error': 'Method not allowed'}, statusCode: 405);
+      body: {'error': 'Method not allowed'},
+      statusCode: 405,
+    );
   }
 
   final formData = await request.formData();
   final username = formData.fields['username'];
   final password = formData.fields['password'];
-
-  if (username == null || password == null) {
+  final email = formData.fields['email'];
+  if (!isInputValid(username, password, email)) {
     return Response.json(
-        body: {'error': 'Username and password required'}, statusCode: 400);
+      body: {'error': 'Username and password required'},
+      statusCode: 400,
+    );
   }
 
+  return authenticateHandler(
+    usersManager,
+    username!,
+    password!,
+    email!,
+    response,
+  );
+}
+
+Future<Response?> authenticateHandler(
+  UsersManager usersManager,
+  String username,
+  String password,
+  String email,
+  Response? response,
+) async {
   try {
-    await usersManager.login(username, password).then(
-      (value) {
-        final token =
-            jwt.sign(SecretKey(jwtSecret), expiresIn: const Duration(days: 1));
-        response = Response.json(
-          body: {
-            'message': StatusCodes.getMessage(StatusCodes.OK),
-            'token': token,
+    await usersManager.authenticate(username, password, email).then(
+      (value) async {
+        value.fold(
+          (l) {
+            final token = JWTManager.getJWT(username, email);
+            response = Response.json(
+              body: {
+                'message': StatusCodes.getMessage(StatusCodes.OK),
+                'token': token,
+              },
+            );
+          },
+          (r) {
+            response = Response.json(
+              body: {'error': '${r.headers}'},
+              statusCode: 401,
+            );
           },
         );
       },
