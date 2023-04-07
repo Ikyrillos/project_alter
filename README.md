@@ -1,12 +1,37 @@
 # project_alter
 
-[![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![License: MIT][license_badge]][license_link]
-[![Powered by Dart Frog](https://img.shields.io/endpoint?url=https://tinyurl.com/dartfrog-badge)](https://dartfrog.vgv.dev)
+This is a simple project of E-Commerce API using Dart_frog
 
-An example application built with dart_frog
+## EndPoints
 
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
-[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
-[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
+Main Endpoints:
+
+- Registration flow
+  - `POST /api/v1/auth/register` - Register a new user
+  - `POST /api/v1/auth/login` - Login a user
+
+ Explanation of the Endpoints:
+
+- `POST /api/v1/auth/register` - Register a new user
+  - Request Body:
+    - `username` - String - Required
+    - `password` - String - Required
+    - `email` - String - Required
+  - Response Body:
+    - `username` - String
+    - `email` - String
+    - `token` - String
+    - `id` - Integer
+    - `message` - String
+
+- `POST /api/v1/auth/login` - Login a user
+  - Request Body:
+    - `username` - String - Required
+    - `password` - String - Required
+
+  - Response Body:
+    - `username` - String
+    - `email` - String
+    - `token` - String
+    - `id` - Integer
+    - `message` - String

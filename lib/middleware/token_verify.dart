@@ -13,7 +13,7 @@ Middleware tokenVerification() {
       } else {
         return Response.json(
           statusCode: StatusCodes.Unauthorized,
-          body: {'error': 'Unauthorized'},
+          body: {'error': 'Unauthorized, invalid token'},
         );
       }
     };
