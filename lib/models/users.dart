@@ -1,14 +1,16 @@
 // ignore_for_file: public_member_api_docs
-
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:dartz/dartz.dart';
 import 'package:project_alter/config/db.config.dart';
 import 'package:project_alter/controllers/sql_sanitizer.dart';
+import 'package:project_alter/data/local/database_impl.dart';
 import 'package:project_alter/models/encryption.dart';
 
 /// UsersManager class that handles all the user related methods
 class UsersManager {
+  DatabaseImpl database = DatabaseImpl();
+
   /// create user method that takes in a username and password
   /// and returns a user object
   Future<Either<User, Response>> createUser(
@@ -27,29 +29,12 @@ class UsersManager {
         ),
       );
     }
-    // create a user object
-    final user = User(
-      username: username,
-      email: email,
-      password: PasswordHashing.hashPassword(
-        password,
-      ),
-    );
     // save the user object to the database
     final passwordHash = PasswordHashing.hashPassword(password);
     // ignore: lines_longer_than_80_chars
-    await pg.runTx(
-      (c) => c.query(
-        '''INSERT INTO users (username, password_digest, email) VALUES (@username, @password, @email)''',
-        substitutionValues: {
-          'username': username,
-          'password': passwordHash,
-          'email': email,
-        },
-      ),
-    );
-    // return the user object
-    return left(user);
+    final userResult =
+        database.createUser(username, passwordHash, email, passwordHash);
+    return userResult;
   }
 
   /// authenticate method that takes in a username and password
@@ -71,26 +56,12 @@ class UsersManager {
     // get the username and pass hash object from the database
     final passHash = PasswordHashing.hashPassword(password);
     // check if the password hash matches the one in the database
-    final pgResult = await pg.runTx(
-      (c) => c.query(
-        // ignore: lines_longer_than_80_chars
-        'SELECT * FROM users WHERE username = @username AND password_digest = @password AND email = @email',
-        substitutionValues: {
-          'username': username,
-          'password': passHash,
-          'email': email,
-        },
-      ),
-    );
-
+    final pgResult = await database.authenticate(username, email, passHash);
     final newUsername = pgResult[0][1] as String;
     final newEmail = pgResult[0][3] as String;
-    // return Response(
-    //   body: '{"error": ${data}}',
-    //   statusCode: StatusCodes.BadRequest,
-    // );
-    // ));
+    // create a user object
     final userObj = User(
+      id: pgResult[0][0] as int,
       username: newUsername,
       password: passHash,
       email: newEmail,
@@ -127,35 +98,15 @@ class UsersManager {
 
   /// check user if already exists by username
   Future<bool> isUserAlreadyExist(String username) async {
-    final isUserExist = await pg.runTx(
-      (c) => c.query(
-        'SELECT * FROM users WHERE username = @username',
-        substitutionValues: {
-          'username': username,
-        },
-      ),
-    );
-    if (isUserExist.isEmpty) {
-      return false;
-    }
-    return true;
+    final isUserExist = await database.isUserAlreadyExist(username);
+    return isUserExist;
   }
 
   /// check user if already exists by email
   /// return true if user already exists
   Future<bool> isEmailAlreadyExist(String email) async {
-    final isEmailExist = await pg.runTx(
-      (c) => c.query(
-        'SELECT * FROM users WHERE email = @email',
-        substitutionValues: {
-          'email': email,
-        },
-      ),
-    );
-    if (isEmailExist.isEmpty) {
-      return false;
-    }
-    return true;
+    final status = await database.isEmailAlreadyExist(email);
+    return status;
   }
 }
 
@@ -163,31 +114,20 @@ class UsersManager {
 /// that is stored in the database
 class User {
   /// User constructor that takes in a username and password
-  User({required this.username, required this.password, required this.email});
-
+  User({
+    required this.username,
+    required this.password,
+    required this.email,
+    required this.id,
+  });
+  int id;
   String username;
   String password;
   String email;
 
-  /// get user method that takes in a username and returns a user object
-  static Future<String> getUser(String username) async {
-    // get the user object from the database PgSQL
-    final user = await pg.runTx(
-      (c) => c.query(
-        'SELECT * FROM users WHERE username = @username',
-        substitutionValues: {
-          'username': username,
-        },
-      ),
-    );
-    // return the user object
-    await pg.close();
-    return user.first[0] as String;
-  }
-
   /// save method that saves the user object to the database
   String toJson() {
-    return '{"username": "$username", "password": "$password"}';
+    return '{"username": "$username", "email": "$email"}';
   }
 
   /// save method that saves the user object to the database

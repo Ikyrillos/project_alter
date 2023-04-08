@@ -41,12 +41,16 @@ Future<Response?> onRequest(RequestContext context) async {
     await usersManager.createUser(username, password!, email).then((value) {
       final token = JWTManager.getJWT(username, email);
       log('value: $jwtSecret');
-      response = Response.json(
-        body: {
-          'message': StatusCodes.getMessage(StatusCodes.Created),
-          'token': token
-        },
-        statusCode: StatusCodes.Created,
+      value.fold(
+        (user) => response = Response.json(
+          body: {
+            'message': StatusCodes.getMessage(StatusCodes.Created),
+            'token': token,
+            'user': user.toJson(),
+          },
+          statusCode: StatusCodes.Created,
+        ),
+        (error) => response = error,
       );
     });
   } catch (e) {

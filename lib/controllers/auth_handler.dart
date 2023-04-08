@@ -1,4 +1,3 @@
-
 // ignore_for_file: parameter_assignments
 
 import 'package:dart_frog/dart_frog.dart';
@@ -24,6 +23,7 @@ Future<Response?> authenticateHandler(
               body: {
                 'message': StatusCodes.getMessage(StatusCodes.OK),
                 'token': token,
+                'user': l.toJson()
               },
             );
           },
