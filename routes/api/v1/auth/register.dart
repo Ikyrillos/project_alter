@@ -4,7 +4,7 @@ import 'package:project_alter/config/db.config.dart';
 import 'package:project_alter/config/jwt.dart';
 import 'package:project_alter/controllers/auth_input_handler.dart';
 import 'package:project_alter/models/httpCodes.dart';
-import 'package:project_alter/models/users.dart';
+import 'package:project_alter/models/userManager.dart';
 
 Future<Response?> onRequest(RequestContext context) async {
   final usersManager = UsersManager();

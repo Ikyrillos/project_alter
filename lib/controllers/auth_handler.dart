@@ -3,8 +3,7 @@
 import 'package:dart_frog/dart_frog.dart';
 import 'package:project_alter/config/jwt.dart';
 import 'package:project_alter/models/httpCodes.dart';
-import 'package:project_alter/models/users.dart';
-
+import 'package:project_alter/models/userManager.dart';
 /// authenticateHandler
 Future<Response?> authenticateHandler(
   UsersManager usersManager,
