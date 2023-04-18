@@ -9,17 +9,22 @@ Middleware tokenVerification() {
   return (handler) {
     return (context) async {
       final isVerified = await AuthController.verify(context);
-      final jwtToken = context.request.headers['authorization'];
-      final token = jwtToken!.replaceAll('Bearer ', '');
-      final decodedToken = jwtDecode.Jwt.parseJwt(token);
-      final email = decodedToken['email'] as String;
-      final userDB = UsersManager();
-      final isEMailValid = await userDB.isEmailAlreadyExist(email);
-      if (isEMailValid == false) {
-        return Response.json(
-          statusCode: StatusCodes.Unauthorized,
-          body: {'error': 'Unauthorized, invalid token'},
-        );
+      const route = 'auth';
+      if (!context.request.uri.pathSegments.contains(route)) {
+        final jwtToken = context.request.headers['authorization'];
+        final token = jwtToken!.replaceAll('Bearer ', '');
+        final decodedToken = jwtDecode.Jwt.parseJwt(token);
+        final strEmail = decodedToken['email'] as String;
+        final email = strEmail.trim();
+        final userDB = UsersManager();
+        print('email:$email');
+        final isEMailValid = await userDB.isEmailAlreadyExist(email);
+        if (isEMailValid == false) {
+          return Response.json(
+            statusCode: StatusCodes.Unauthorized,
+            body: {'error': 'Unauthorized, invalid token'},
+          );
+        }
       }
       if (isVerified) {
         final response = await handler(context);
