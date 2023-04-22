@@ -12,12 +12,17 @@ Middleware tokenVerification() {
       const route = 'auth';
       if (!context.request.uri.pathSegments.contains(route)) {
         final jwtToken = context.request.headers['authorization'];
+        if (jwtToken == null) {
+          return Response.json(
+            statusCode: StatusCodes.Unauthorized,
+            body: {'error': 'Unauthorized, invalid token'},
+          );
+        }
         final token = jwtToken!.replaceAll('Bearer ', '');
         final decodedToken = jwtDecode.Jwt.parseJwt(token);
         final strEmail = decodedToken['email'] as String;
         final email = strEmail.trim();
         final userDB = UsersManager();
-        print('email:$email');
         final isEMailValid = await userDB.isEmailAlreadyExist(email);
         if (isEMailValid == false) {
           return Response.json(
