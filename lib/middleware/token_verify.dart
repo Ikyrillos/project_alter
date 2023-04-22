@@ -18,7 +18,7 @@ Middleware tokenVerification() {
             body: {'error': 'Unauthorized, invalid token'},
           );
         }
-        final token = jwtToken!.replaceAll('Bearer ', '');
+        final token = jwtToken.replaceAll('Bearer ', '');
         final decodedToken = jwtDecode.Jwt.parseJwt(token);
         final strEmail = decodedToken['email'] as String;
         final email = strEmail.trim();
