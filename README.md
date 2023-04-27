@@ -1,6 +1,6 @@
 # project_alter
 
-This is a simple project of E-Commerce API using Dart_frog
+This is a simple project of Auth API using Dart_frog
 
 ## EndPoints
 
